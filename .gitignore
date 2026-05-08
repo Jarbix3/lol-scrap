@@ -10,8 +10,7 @@ __pycache__/
 
 cache/matches/*.json
 cache/timelines/*.json
-reports/*.md
-reports/*.pdf
+reports/**
 data/raw/*.html
 data/raw/*_files/
 !cache/.gitkeep
