@@ -4,7 +4,7 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import Any
 
-from ..config import ROLE_BASELINES, ROLE_DISPLAY
+from ..config import ROLE_DISPLAY
 from ._helpers import find_participant, is_remake, normalized_role, safe_div
 
 
@@ -54,8 +54,17 @@ def compute_playstyle(
     matches: list[dict[str, Any]],
     timelines: dict[str, dict[str, Any]],
     puuid: str,
+    baselines: dict[str, dict[str, float]] | None = None,
 ) -> dict[str, Any]:
-    """Calcula metricas agregadas por rol vs baseline."""
+    """Calcula metricas agregadas por rol vs baseline.
+
+    `baselines` es el dict {role: {metric: target}} cargado para un rank
+    especifico (ver `config.load_baselines`). Si no se pasa, se usa un
+    fallback vacio: las metricas no van a tener target y los deltas
+    aparecen como '—' en el reporte.
+    """
+    if baselines is None:
+        baselines = {}
     by_role: dict[str, dict[str, list[float]]] = defaultdict(
         lambda: defaultdict(list)
     )
@@ -130,7 +139,7 @@ def compute_playstyle(
         sample_n = len(metrics.get("kp", []))
         if sample_n == 0:
             continue
-        baseline = ROLE_BASELINES.get(role, {})
+        baseline = baselines.get(role, {})
 
         def _mean(key: str) -> float | None:
             vals = metrics.get(key, [])

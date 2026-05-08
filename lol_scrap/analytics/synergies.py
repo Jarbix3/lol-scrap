@@ -21,6 +21,7 @@ def compute_duo_partners(
             "name": "",
             "tag": "",
             "champions": defaultdict(int),
+            "team_positions": defaultdict(int),
         }
     )
 
@@ -46,6 +47,9 @@ def compute_duo_partners(
             champ = ally.get("championName", "")
             if champ:
                 b["champions"][champ] += 1
+            tp = ally.get("teamPosition") or ""
+            if tp in ("TOP", "JUNGLE", "MIDDLE", "BOTTOM", "UTILITY"):
+                b["team_positions"][tp] += 1
 
     rows: list[dict[str, Any]] = []
     for ally_puuid, b in buckets.items():
@@ -56,6 +60,11 @@ def compute_duo_partners(
         display = b["name"]
         if b["tag"]:
             display = f"{display}#{b['tag']}" if display else f"???#{b['tag']}"
+        primary_position: str | None = None
+        if b["team_positions"]:
+            primary_position = max(
+                b["team_positions"].items(), key=lambda x: x[1]
+            )[0]
         rows.append(
             {
                 "puuid": ally_puuid,
@@ -66,6 +75,8 @@ def compute_duo_partners(
                 "top_champs": [
                     {"champion": c, "games": n} for c, n in top_champs
                 ],
+                "team_positions": dict(b["team_positions"]),
+                "primary_position": primary_position,
             }
         )
     rows.sort(key=lambda r: (-r["winrate"], -r["games"]))

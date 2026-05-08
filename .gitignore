@@ -12,8 +12,11 @@ cache/matches/*.json
 cache/timelines/*.json
 reports/*.md
 reports/*.pdf
+data/raw/*.html
+data/raw/*_files/
 !cache/.gitkeep
 !reports/.gitkeep
+!data/raw/.gitkeep
 
 .DS_Store
 .idea/

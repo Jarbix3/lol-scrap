@@ -72,3 +72,23 @@ def iter_player_games(
         if p is None:
             continue
         yield match, p
+
+
+def filter_matches_by_role(
+    matches: list[dict[str, Any]],
+    puuid: str,
+    role: str,
+) -> list[dict[str, Any]]:
+    """Devuelve solo las partidas donde el puuid jugo el rol indicado.
+
+    `role` debe ser canonical: TOP, JUNGLE, MIDDLE, BOTTOM o UTILITY.
+    Las partidas con rol no detectable (teamPosition vacio) quedan fuera.
+    """
+    out: list[dict[str, Any]] = []
+    for match in matches:
+        p = find_participant(match, puuid)
+        if p is None:
+            continue
+        if normalized_role(p) == role:
+            out.append(match)
+    return out

@@ -4,8 +4,7 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import Any
 
-from ..config import ROLE_BASELINES
-from ._helpers import find_participant, is_remake, normalized_role, safe_div
+from ._helpers import find_participant, is_remake, safe_div
 
 
 def detect_low_winrate_champs(
